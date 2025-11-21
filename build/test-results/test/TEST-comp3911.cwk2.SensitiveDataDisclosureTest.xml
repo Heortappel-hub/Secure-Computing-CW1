@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="comp3911.cwk2.SensitiveDataDisclosureTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2025-11-21T17:47:36" hostname="HEORTAPPEL" time="0.262">
+  <properties/>
+  <testcase name="GET with query parameters must not leak patient data" classname="comp3911.cwk2.SensitiveDataDisclosureTest" time="0.253"/>
+  <testcase name="Path guessing /Johnson must not leak data" classname="comp3911.cwk2.SensitiveDataDisclosureTest" time="0.003"/>
+  <testcase name="Unauthenticated request must NOT leak patient data" classname="comp3911.cwk2.SensitiveDataDisclosureTest" time="0.004"/>
+  <system-out><![CDATA[Test Jetty started on port 60018
+]]></system-out>
+  <system-err><![CDATA[SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+]]></system-err>
+</testsuite>

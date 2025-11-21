@@ -14,6 +14,7 @@ dependencies {
     'org.freemarker:freemarker:2.3.29',
     'org.xerial:sqlite-jdbc:3.34.0'
   )
+  testImplementation 'org.junit.jupiter:junit-jupiter:5.9.3'
 }
 
 application {
@@ -51,4 +52,8 @@ task submission(type: Zip) {
   doLast {
     println "cwk2.zip generated."
   }
+}
+
+test {
+  useJUnitPlatform()
 }
