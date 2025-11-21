@@ -20,10 +20,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import javax.servlet.http.HttpSession; //new one
+
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
+
+
 
 @SuppressWarnings("serial")
 public class AppServlet extends HttpServlet {
@@ -63,8 +67,8 @@ public class AppServlet extends HttpServlet {
     }
   }
 
-  @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+@Override
+protected void doGet(HttpServletRequest request, HttpServletResponse response)
    throws ServletException, IOException {
     try {
       Template template = fm.getTemplate("login.html");
@@ -75,10 +79,11 @@ public class AppServlet extends HttpServlet {
     catch (TemplateException error) {
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
-  }
+}
+
 
   @Override
-  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+/*  protected void doPost(HttpServletRequest request, HttpServletResponse response)
    throws ServletException, IOException {
      // Get form parameters
     String username = request.getParameter("username");
@@ -104,6 +109,69 @@ public class AppServlet extends HttpServlet {
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
   }
+*/
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+
+    String username = request.getParameter("username");
+    String password = request.getParameter("password");
+    String surname  = request.getParameter("surname");
+
+    HttpSession session = request.getSession(false);
+    boolean loggedIn = false;
+
+
+    if (session != null && session.getAttribute("user") != null) {
+        loggedIn = true;
+        username = (String) session.getAttribute("user");
+    }
+
+    else if (username != null && password != null 
+             && !username.isEmpty() && !password.isEmpty()) {
+
+        try {
+            if (authenticated(username, password)) {
+                session = request.getSession(true);
+                session.setAttribute("user", username);
+                loggedIn = true;
+            }
+        } catch (SQLException e) {
+            throw new ServletException(e);
+        }
+    }
+
+    if (!loggedIn) {
+        try {
+            Template template = fm.getTemplate("invalid.html");
+            template.process(null, response.getWriter());
+            response.setContentType("text/html");
+            response.setStatus(HttpServletResponse.SC_OK);
+        } catch (TemplateException e) {
+            throw new ServletException(e);
+        }
+        return;
+    }
+
+
+    try {
+        Map<String, Object> model = new HashMap<>();
+        model.put("records", searchResults(surname)); 
+        Template template = fm.getTemplate("details.html");
+        template.process(model, response.getWriter());
+
+        response.setContentType("text/html");
+        response.setStatus(HttpServletResponse.SC_OK);
+
+    } catch (TemplateException e) {
+        throw new ServletException(e);
+    } catch (Exception e) {
+        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+    }
+} 
+
+
+
+
 
 //  private boolean authenticated(String username, String password) throws SQLException {
 //    String query = String.format(AUTH_QUERY, username, password);
