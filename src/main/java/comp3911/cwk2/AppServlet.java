@@ -199,8 +199,20 @@ private boolean authenticated(String username, String password) throws SQLExcept
             if (stored.startsWith("$2a$") || stored.startsWith("$2b$") || stored.startsWith("$2y$")) {
                 return PasswordUtil.checkPassword(password, stored);
             }
-
-            return password.equals(stored);
+      // Plaintext (or legacy) password match: upgrade to bcrypt hash after successful auth
+      if (password.equals(stored)) {
+        String newHash = PasswordUtil.hashPassword(password);
+        String updateSql = "update user set password=? where username=?";
+        try (PreparedStatement upd = database.prepareStatement(updateSql)) {
+          upd.setString(1, newHash);
+          upd.setString(2, username);
+          upd.executeUpdate();
+        } catch (SQLException e) {
+          // If update fails, still allow login but do not block
+        }
+        return true;
+      }
+      return false;
         }
     }
 }
@@ -226,6 +238,8 @@ private boolean authenticated(String username, String password) throws SQLExcept
 //}
 
 // FIX: F2 - Use PreparedStatement to prevent SQL injection in patient search
+// Methods:
+// Change String.format() query to PreparedStatement, in order to prevent SQL injection.
 private List<Record> searchResults(String surname) throws SQLException {
     List<Record> records = new ArrayList<>();
 
