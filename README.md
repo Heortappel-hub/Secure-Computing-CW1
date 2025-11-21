@@ -1,6 +1,6 @@
 Data Stored in the DB:
 
-@@Users:@@
+Users:
 ID	Name	Username	Password
 1	Nick Efford	nde	wysiwyg0
 2	Mary Jones	mjones	marymary
