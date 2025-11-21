@@ -183,16 +183,26 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
 
 // FIX: F1 - Use PreparedStatement to prevent SQL injection in login
 private boolean authenticated(String username, String password) throws SQLException {
-  String sql = "select * from user where username=? and password=?";
+    String sql = "select password from user where username=?";
 
-  try (PreparedStatement ps = database.prepareStatement(sql)) {
-    ps.setString(1, username);
-    ps.setString(2, password);
+    try (PreparedStatement ps = database.prepareStatement(sql)) {
+        ps.setString(1, username);
 
-    try (ResultSet results = ps.executeQuery()) {
-      return results.next();
+        try (ResultSet results = ps.executeQuery()) {
+            if (!results.next()) {
+                return false; 
+            }
+
+            String stored = results.getString("password");
+            if (stored == null) return false;
+
+            if (stored.startsWith("$2a$") || stored.startsWith("$2b$") || stored.startsWith("$2y$")) {
+                return PasswordUtil.checkPassword(password, stored);
+            }
+
+            return password.equals(stored);
+        }
     }
-  }
 }
 
 //  private List<Record> searchResults(String surname) throws SQLException {
