@@ -19,3 +19,8 @@
 
 
 Notice: No encrypted
+
+
+Fix:
+<img width="1366" height="519" alt="image" src="https://github.com/user-attachments/assets/2b4a9be7-533e-465d-a227-f4919913be57" />
+Enable jetty.servlet.ServletContextHandler instead of import org.eclipse.jetty.servlet.ServletHandler; The Last version does not support httpsession.
