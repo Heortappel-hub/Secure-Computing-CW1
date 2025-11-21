@@ -24,3 +24,7 @@ Notice: No encrypted
 Fix:
 <img width="1366" height="519" alt="image" src="https://github.com/user-attachments/assets/2b4a9be7-533e-465d-a227-f4919913be57" />
 Enable jetty.servlet.ServletContextHandler instead of import org.eclipse.jetty.servlet.ServletHandler; The Last version does not support httpsession.
+
+## Hash update
+<img width="895" height="263" alt="image" src="https://github.com/user-attachments/assets/88c37d10-f696-4fb6-a82f-3781bef44a63" />
+For the previous data stored in the DB, update the password to encrypt after login.
