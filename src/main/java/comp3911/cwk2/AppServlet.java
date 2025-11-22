@@ -122,8 +122,18 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
 
 
     if (session != null && session.getAttribute("user") != null) {
-        loggedIn = true;
-        username = (String) session.getAttribute("user");
+        String sessUser = (String) session.getAttribute("user");
+        try {
+            if (userExists(sessUser)) {
+                loggedIn = true;
+                username = sessUser;
+            } else {
+                // keep session but treat as not logged in so invalid.html returned
+                loggedIn = false;
+            }
+        } catch (SQLException e) {
+            throw new ServletException(e);
+        }
     }
 
     else if (username != null && password != null 
@@ -213,6 +223,17 @@ private boolean authenticated(String username, String password) throws SQLExcept
         return true;
       }
       return false;
+        }
+    }
+}
+
+// Access control helper: verify user from session exists
+private boolean userExists(String username) throws SQLException {
+    String sql = "select 1 from user where username=?";
+    try (PreparedStatement ps = database.prepareStatement(sql)) {
+        ps.setString(1, username);
+        try (ResultSet rs = ps.executeQuery()) {
+            return rs.next();
         }
     }
 }
