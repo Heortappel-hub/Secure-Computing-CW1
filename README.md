@@ -21,6 +21,30 @@
 Notice: No encrypted
 
 
+## Fix Verification Method： 
+
+F1 and F2: Attempt the original SQL injection payloads 
+
+Expected results: 
+
+Login should fail. 
+
+Search should return no unauthorised data. 
+
+Logs should show no SQL errors. 
+
+F3： Perform the following penetration test: 
+
+Log out or delete cookies. 
+
+Manually craft a POST request (e.g., using curl/Postman): 
+
+ 
+
+F4： Test whether protected pages can be accessed without a valid session 
+
+Add a basic session verification to check if current user is stored in user table. 
+
 Fix:
 <img width="1366" height="519" alt="image" src="https://github.com/user-attachments/assets/2b4a9be7-533e-465d-a227-f4919913be57" />
 Enable jetty.servlet.ServletContextHandler instead of import org.eclipse.jetty.servlet.ServletHandler; The Last version does not support httpsession.
@@ -28,3 +52,12 @@ Enable jetty.servlet.ServletContextHandler instead of import org.eclipse.jetty.s
 ## Hash update
 <img width="895" height="263" alt="image" src="https://github.com/user-attachments/assets/88c37d10-f696-4fb6-a82f-3781bef44a63" />
 For the previous data stored in the DB, update the password to encrypt after login.
+
+
+
+
+ 
+
+ 
+
+F5: Create a new user or update password and check DB, where password should now be hashed. 
